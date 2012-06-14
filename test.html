@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>Example</title>
+    <script src="javascript/jquery.min.js"></script>
+    <script src="javascript/jquery.jqplot.min.js"></script>
+    <script src="javascript/plugins/jqplot.dateAxisRenderer.min.js"></script>
+    <script src="mynewt.js"></script>
+    <script src="javascript/jmol-12.2.25/Jmol.js"></script>
+    <script src="javascript/jSpecView/JSVfunctions.js"></script>
+    </head>
+  <body>
+    <h1>flashy!</h1>
+    <script>
+      jmolInitialize("javascript/jmol-12.2.25", "JmolAppletSigned.jar");	
+      jmolApplet(500, "load testmol.xyz");
+    </script>
+    <div> The Current Directory is <script type ="text/javascript">
+	function dispDir(){
+	var dirs=window.location.href;
+	document.write(dirs);
+	}
+	dispDir(); </script></div>
+    <hr><h6>HR's are ugly @_@</h6><hr>
+    <!--script>
+      insertJSVObject("/javascript/jSpecView/jspecview.jar","JSVApplet","600","400","load pclanilIR.jdx");
+    </script-->
+    <br>
+    ShirleyXAS Dev.
+  </body>
+</html>
