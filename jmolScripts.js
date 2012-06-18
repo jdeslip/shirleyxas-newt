@@ -13,11 +13,8 @@ var previewID = "preview";
 var JMOL_SCRIPT_DIR = "http://portal.nersc.gov/project/als/ShirleyXAS/jmolScripts/"; //Where related jmol scritps are.
 var MIN_CELL_SIZE = 4;//angstroms
 var CELL_EXPAND_FACTOR = 2.5;//How far to expand the unit cell (multiplier)
-<<<<<<< HEAD
 var CrystalSymmetry = null; // flag set when crystal is loaded, use for crystal data // doesnt work properly yet...
 
-=======
->>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 
 //---------------------------------
 //Editor Functions-----------------
@@ -101,11 +98,7 @@ function tryToGrabCrystalData() {
     var jsVar = jmolGetPropertyAsJavaObject("auxiliaryinfo.models[0].infoUnitcell", "all", "preview");
     //console.log(jsVar);
     if(jsVar) {
-<<<<<<< HEAD
-	
 	CrystalSymmetry = "" + jmolGetPropertyAsJavaObject("auxiliaryInfo.models[0].spaceGroup", "all", "preview");
-=======
->>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 	myform.CrystalFlag.checked=true;
 	//console.log(jsVar[5]);
 	myform.CellA.value = "" + jsVar[0];
@@ -117,10 +110,7 @@ function tryToGrabCrystalData() {
 	return true;
     }
     else {
-<<<<<<< HEAD
 	CrystalSymmetry = null;
-=======
->>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 	myform.CrystalFlag.checked=false;
 	return false;
 	//make cell size array as noncrystal
@@ -133,11 +123,7 @@ function makeCellSize() {
     } else {
 	makeAbstractCellSize();
     }
-<<<<<<< HEAD
     drawMolInPreview();
-=======
-    drawCell();
->>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 }
 function makeCrystalCellSize() {
     //Does not modify alpha/beta/gamma (can it?)
@@ -235,26 +221,17 @@ function uploadCoordinates(form) {
 	return;
     }
 }
-<<<<<<< HEAD
 function getUnitCell() {
     var myform = document.getElementById('inputs');
     var a = myform.CellA.value;
     var b = myform.CellB.value;
     var c = myform.CellC.value;
-=======
-function drawCell() {
-    var myform = document.getElementById('inputs');
-    var a = myform.CellA.value / 2.0;
-    var b = myform.CellB.value / 2.0;
-    var c = myform.CellC.value / 2.0;
->>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
     var alp = myform.CellAlpha.value;
     var bet = myform.CellBeta.value;
     var gam = myform.CellGamma.value;
     //a = a * Math.sin(alp*Math.PI/180);
     //b = b * Math.sin(bet*Math.PI/180);
     //c = c * Math.sin(gam*Math.PI/180);Not correct transform
-<<<<<<< HEAD
     var vector = "{"+a+" "+b+" "+c+" "+alp+" "+bet+" "+gam+"}";
     var offset = "{"+(a/2.0)+" "+(b/2.0)+" "+(c/2.0)+"}";
     //console.log(vector);
@@ -269,20 +246,12 @@ function drawCell() {
     }
     console.log(scr);
     return scr;
-=======
-    var vector = "{"+a+" "+b+" "+c+"}";
-    //console.log(vector);
-    var scr = "boundbox (all) "+vector+" ON;";
-    //Fix this to incorporate angles.
-    jmolScript(scr, previewID);
->>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 }
 function drawMolInPreview() {
     var scr = "unbind 'RIGHT';";
     scr += "unbind 'LEFT' '_clickFrank'; "; 
     scr += "set defaultLattice {1,1,1}; ";
     var xyz = makeXYZfromCoords();
-<<<<<<< HEAD
     scr += "xyz = \"" + xyz + "\";";
     //Open Try on successful load
     scr += "try{\nLOAD \"@xyz\" {1 1 0} ";
@@ -291,22 +260,10 @@ function drawMolInPreview() {
     scr += "set PickCallback \"jmolscript:javascript selectionCallback();\";";
     scr += "set picking select atom;";
     scr += "unitcell ON;";
-=======
-    //Open Try on successful load
-    scr += "try{\nLOAD DATA \"mod\"\n" + xyz + "\nEND \"mod\";";
-    scr += "selectionHalos on; ";
-    scr += "set PickCallback \"jmolscript:javascript selectionCallback();\";";
-    scr += "set picking select atom;";
-    scr += "javascript drawCell();";
->>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
     scr += "javascript addSelections();";
     scr += "}catch(e){}";
     //console.log(scr);
     jmolScript(scr, previewID);
-<<<<<<< HEAD
-=======
-    
->>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 }
 
 //Redraw the molecule according to coordinates
@@ -336,10 +293,6 @@ function addSelections() {
 	}
     }
     scr += "none";
-<<<<<<< HEAD
-=======
-    //console.log(scr);
->>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
     jmolScript(scr, 'preview');
 }
 function selectionCallback() {
