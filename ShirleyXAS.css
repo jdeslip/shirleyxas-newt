@@ -23,6 +23,7 @@ a:active  {color:white;}
         min-height:400px;
 }
 
+<<<<<<< HEAD
 #flotwrapper {
     background-color:white;
 }
@@ -31,6 +32,8 @@ a:active  {color:white;}
     width: 400px; height: 280px;
 }
 
+=======
+>>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 .blueBackground {
         background-color:#69779a;	
         border-radius: 15px;

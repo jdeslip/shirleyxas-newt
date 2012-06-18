@@ -139,10 +139,13 @@ function killJob(job) {
 		});
 }
 
+<<<<<<< HEAD
 //Matches name to job output name formats
 function properName(name) {
     return name.match(/^\w*\d{2}\w{3}\d{10}$/);
 }
+=======
+>>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 function previousJobs() {
     //add timestamper
     $('#previousjobs').html("<table width=100\%><th align=left>Finished Calculations</th></table><center><img src=\"ajax-loader-2.gif\"></center>");
@@ -151,6 +154,7 @@ function previousJobs() {
 		success: function(res){
 		if (res != null && res.length > 0) {
 		    var myText = "<table width=100\%><th align=left>Finished Calculations</th></table><br>";
+<<<<<<< HEAD
 		    myText += "<table width=100\%><tr><th width=45\%>Job Name</th><th width=20\%>Hours</th><th width=120></th></tr></table>";
 		    myText += "<table width=100\% cellpadding=5>";
 		    var occurs =[];
@@ -173,6 +177,16 @@ function previousJobs() {
 				+ "<td><button onClick=\"viewJobFiles(\'" 
 				+ jname + "\', \'" + res[i].hostname
 				+ "\')\" type=\"button\">View Files</button></td>";
+=======
+		    myText += "<table width=100\%><tr><th width=70\%>Job Name</th><th>Hours</th><th width=120></th></tr></table>";
+		    myText += "<table width=100\% cellpadding=5>"
+			for (var i = 0 ; i < res.length ; i++) {
+			    //console.log(res[i]);
+			    myText += "<tr class='listitem'>";
+			    myText += "<td width=70\%>" + res[i].jobname + "</td><td class=\"statusnone\">" + res[i].rawhours
+				+ "</td><td><button onClick=\"viewJob(\'" + res[i].jobname + "\', \'" + res[i].hostname
+				+ "\')\" type=\"button\">View Results</button></td>";
+>>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 			    myText += "</tr>";
 			}
 		    myText += "</table:><br>";
@@ -192,6 +206,7 @@ function previousJobs() {
 		});
 
 }
+<<<<<<< HEAD
 function individualJobOutput(jobName, machine) {
      $('#individualjob').html("<table width=100\%><th align=left>Results for "+jobName + "</th></table><center><img src=\"ajax-loader-2.gif\"></center>");
      //As it writes the html
@@ -222,6 +237,12 @@ function makePlot() {
 }
 function individualJob(jobName, machine) {
     $('#individualjob').html("<table width=100\%><th align=left>Output files for "+jobName
+=======
+
+function individualJob(jobName, machine) {
+    jobName = jobName.replace("-ANALYSE","").replace("-REF","").replace("-XAS","");
+    $('#individualjob').html("<table width=100\%><th align=left>Results for "+jobName
+>>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 			     + "</th></table><center><img src=\"ajax-loader-2.gif\"></center>");
     machine = machine.toLowerCase();
     var directory = "/file/" + machine + "/global/scratch/sd/" + myUsername + "/"+jobName.split("-")[0];
@@ -229,7 +250,11 @@ function individualJob(jobName, machine) {
 		url: directory,
 		success: function(res){
 		if (res != null && res.length > 0) {
+<<<<<<< HEAD
 		    var myText = "<table width=100\%><th align=left>Output files for " + jobName + "</th></table><br>";
+=======
+		    var myText = "<table width=100\%><th align=left>Results for " + jobName + "</th></table><br>";
+>>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 		    myText += "<table width=100\%><tr><th width=70\%>Name</th><th>Size</th><th width=120></th></tr></table>";
 		    myText += "<table width=100\% cellpadding=5>"
 			for (var i = 0 ; i < res.length ; i++) {
@@ -483,10 +508,14 @@ function validateInputs(form) {
 	gam.match(/^\d*.?\d*?/) == null || gam > 180) {
 	message += "Cell Size Angles are not valid. \n";
 	invalid = true; }
+<<<<<<< HEAD
     var brv = form.IBRAV.value;
     if (brv.match(/^\d?/) == null || brv > 14 || brv < 0) {
 	message += "Invalid Bravais Lattice. \n";
 	invalid = true; }
+=======
+    
+>>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
     //Sterilize coordinates, if they have errors, drop them. (in newJobSubmission)
     if (invalid) {alert(message); form.Submit.disabled=false;}
     else 
@@ -550,14 +579,22 @@ function executeJob(form, materialName) {
     var PPP = form.PPP.value;
     var nodes = form.NNODES.value;
     var machine = form.machine.value;
+<<<<<<< HEAD
     var brv =  form.IBRAV.value;
+=======
+
+>>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
     //This is so hacked together, watch for escaped characters.
     //Pass inputs and pbs headers as files?
     var inputs="\"MOLNAME=\\\""+materialName+"\\\"\\n";
     inputs+="XASELEMENTS='"+XAS+"'\\n";
     inputs+="PPP="+PPP+"\\n";
     //is this crystal feature correct??
+<<<<<<< HEAD
     inputs+="IBRAV="+brv+"\\n";
+=======
+    inputs+="IBRAV=14\\n";
+>>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
     inputs+="A="+form.CellA.value+"\\n";
     inputs+="B="+form.CellB.value+"\\n";
     inputs+="C="+form.CellC.value+"\\n";
@@ -577,6 +614,7 @@ function executeJob(form, materialName) {
     command += machine + " ";
     //command += form.Queue.value + " ";
     //console.log(command);
+<<<<<<< HEAD
  
     var webdata = materialName + "\n";
     webdata += XAS + "\n";
@@ -593,6 +631,8 @@ function executeJob(form, materialName) {
 		data: webdata,
 		success: function(res) {;},});
 
+=======
+>>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
     //Post job.
     $.newt_ajax({type: "POST",
 		url: "/command/" + machine,
@@ -636,6 +676,7 @@ function individualJobWrapper(myJobId, machine) {
         individualJob(myJobId, machine);
     }
 }
+<<<<<<< HEAD
 function viewJobOutputWrapper(myJobId, machine) {
     if (myUsername.indexOf("invalid") != -1) {
         //
@@ -643,6 +684,8 @@ function viewJobOutputWrapper(myJobId, machine) {
         individualJobOutput(myJobId, machine);
     }
 }
+=======
+>>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 function editMoleculeWrapper() {
     if (myUsername.indexOf("invalid") != -1) {
         //
@@ -651,6 +694,7 @@ function editMoleculeWrapper() {
     }
 }
 //Div Functions.  Formats webpage.
+<<<<<<< HEAD
 function viewJobFiles(myJobId, machine) {
     $('#runningjobs').hide();
     $('#previousjobs').hide();
@@ -660,13 +704,19 @@ function viewJobFiles(myJobId, machine) {
     individualJobWrapper(myJobId, machine);
 }
 
+=======
+>>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 function viewJob(myJobId, machine) {
     $('#runningjobs').hide();
     $('#previousjobs').hide();
     $('#shirleyinfo').hide();
     $('#submitjobs').hide();
     $('#individualjob').show();
+<<<<<<< HEAD
     viewJobOutputWrapper(myJobId, machine);
+=======
+    individualJobWrapper(myJobId, machine);
+>>>>>>> c39d83c70c81523ad2d41704110f2ef60ae31906
 }
 
 function switchToSubmitForm() {

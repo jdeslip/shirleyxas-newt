@@ -2,7 +2,9 @@
   <head>
     <title>Example</title>
     <script src="javascript/jquery.min.js"></script>
-    <script src="javascript/Flot/jquery.flot.js"></script>
+    <script src="javascript/jquery.jqplot.min.js"></script>
+    <script src="javascript/plugins/jqplot.dateAxisRenderer.min.js"></script>
+    <script src="mynewt.js"></script>
     <script src="javascript/jmol-12.2.25/Jmol.js"></script>
     <script src="javascript/jSpecView/JSVfunctions.js"></script>
     </head>
@@ -12,15 +14,6 @@
       jmolInitialize("javascript/jmol-12.2.25", "JmolAppletSigned.jar");	
       jmolApplet(500, "load testmol.xyz");
     </script>
-    <div id="placeholder" style="width: 600px; height: 300px;"></div>
-    <script>
-      var d1 = [];
-      for (var i = 0; i < 14; i += 0.5)
-	  d1.push([i, Math.sin(i)]);
-	 var d2 = [[0, 3], [4, 8], [8, 5], [9, 13]];
-		  var d3 = [[0, 12], [7, 12], null, [7, 2.5], [12, 2.5]];
-$.plot($("#placeholder"), [ d1, d2, d3 ]);
- </script>
     <div> The Current Directory is <script type ="text/javascript">
 	function dispDir(){
 	var dirs=window.location.href;
