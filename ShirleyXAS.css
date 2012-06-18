@@ -1,0 +1,56 @@
+html, body {
+        font: 12px/15px sans-serif;
+        background: #ddd;
+        padding: 0;
+        color: #000;
+        margin: 0;
+        }
+
+h4, h5, h6 {
+        font-weight: normal;
+        }
+
+h1, h2, h3 { color: #000000; font-weight: bold;
+
+        }
+
+a:link    {color:white;}
+a:visited {color:white;}
+a:hover   {color:white;}
+a:active  {color:white;}
+
+#menu {
+        min-height:400px;
+}
+
+#flotwrapper {
+    background-color:white;
+}
+
+#placeholder {
+    width: 400px; height: 280px;
+}
+
+.blueBackground {
+        background-color:#69779a;	
+        border-radius: 15px;
+}
+
+
+.listitem {
+        background-color:#8994b0;	
+        border-radius: 3px;
+}
+
+.statusup {color: #509c2d;
+           text-align: center;
+         }
+
+.statusdown {color: #a42510;
+           text-align: center;
+         }
+
+.statusnone {text-align: center;
+         }
+
+

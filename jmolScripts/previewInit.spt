@@ -1,0 +1,8 @@
+selectionHalos ON;
+unbind "RIGHT";
+unbind "LEFT" "_clickFrank";
+set picking SELECT ATOM;
+#bind "LEFT" "./previewBindLeft.jmsc";
+#bind "SHIFT-LEFT' "./previewBindShLeft.jmsc";
+#bind "CTRL-LEFT" "./previewBindCtrlLeft.jmsc";
+#bind "SHIFT-CTRL-LEFT" "./previewBindShCtrlLeft.jmsc";

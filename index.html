@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head><title>ShirleyXAS at NERSC</title>
+
+    <link rel="stylesheet" href="ShirleyXAS.css">
+    <script src="javascript/jquery.min.js"></script>
+    <script src="javascript/jquery.jqplot.min.js"></script>
+    <script src="javascript/plugins/jqplot.dateAxisRenderer.min.js"></script>
+    <script src="javascript/jmol-12.2.25/Jmol.js"></script>
+    <script src="javascript/Flot/jquery.flot.js"></script>
+    <script src="mynewt.js"></script>
+    <script src="ShirleyXAS.js"></script>
+    <script src="jmolScripts.js"></script>
+
+  </head>
+
+  <body>
+    <br><br>
+
+    <center>
+      <table width=880 class='blueBackground' cellpadding=20>
+	<tr><td width=200 valign=top>
+	    <div id='menu'>
+	      <br><br>
+	      <a onClick="switchToInfo()" href="javascript://">What is this?</a><br><br>
+	      <a onClick="switchToRunning()" href="javascript://">Running Calculations</a><br><br>
+	      <a onClick="switchToPrevious()" href="javascript://">Finished Calculations</a><br><br>
+	      <a onClick="switchToSubmitForm()" href="javascript://">Submit Calculation</a><br><br>
+	      <a onClick="switchToDrawMolecule()" href="javascript://">Draw Molecule</a><br><br>
+	    </div>
+	  </td>
+	  <!-- Span into two spans for css styling? -->
+	  <td align=right valign=top>
+	    <div id='main'>
+	      <div id='auth'></div><hr><br>
+	      <div id='individualjob'></div>
+	      <div id='runningjobs'></div>
+	      <div id='previousjobs' style="display: none;"></div>
+
+	      <!--What is ShirleyXAS and what does it do?-->
+	      <div id='shirleyinfo'>
+		<h1 align = "left"> ShirleyXAS </h1><br>
+		<p align= "left"> Is a web tool used to find core excitation spectral data, calculated on NERSC supercomputers.  More information coming soon. </p>
+	      </div>
+
+	      <!--All Functions for editing and manipulating molecules-->
+	      <div id='moleculeEditor' style="display:none;">
+		<table width=100%><th align=left>Jmol Molecular Viewer</th>
+		</table><br>
+	      <script>
+		jmolInitialize("javascript/jmol-12.2.25", "JmolAppletSigned.jar");
+		jmolApplet([600, 400], "javascript drawMol('main');", "main");
+	      </script>
+	      <br> 
+	      <a href="http://chemapps.stolaf.edu/jmol/docs?ver=12.2">Command Line Instructions</a><br>
+	      <script>
+		jmolCommandInput();
+	      </script>
+	      <form id='loadfile'>
+	      <input type=file id="uploadfile" name="uploadfile" onchange="uploadToEditor(this.form)"/><br></form>	      
+	      <button onClick="help()">Help?</button>
+	      <button onClick="minimizeStructure()">Minimize Structure</button>
+	      <button onClick="toggleModelkitMode()">Edit Structure</button>
+	      <button onClick="portCoordinates()">Port Coordinates</button><br>
+	      </div> 
+	      <!-- End -->
+
+	      <!-- Submitting a job form. -->
+	      <div id='submitjobs' style="display: none; font-size: 12pt;" align=left>
+		<table width=100%><th align=left>Submit Calculation</th></table>
+		<form id='inputs' name='inputs' METHOD="GET">
+		  Material/Directory Name<br>
+		  <input type='text' name='MOLNAME' id='material' value="MolName"/><br>
+		  Excited Atoms<br>
+		  <input type="text" name="XASELEMENTS" id="XASELEMENTS" value="C" onkeyup="addSelections();"/><br>
+		  
+		  Coordinates<br>
+		  <TEXTAREA name="coordinates" rows="10" cols="50" onchange="drawMol('preview')">C -0.00025 -0.00025 -0.00025
+H 0.64018 0.64018 0.64018
+H -0.64075 -0.64075 0.64049 
+H -0.64075 0.64049 -0.64075 
+H 0.64049 -0.64075 -0.64075</TEXTAREA><br>
+		  
+		  <!--Molecule Preview -->
+		  Preview<br>
+		    <script>
+		    jmolInitialize("javascript/jmol-12.2.25", "JmolAppletSigned.jar");	
+		    jmolApplet(180, "javascript drawMol('preview');", "preview");
+		    </script>
+		  <br>
+
+		  Upload Coordinates<br>
+		  <input type=file id='uploadfile' name='uploadfile' onchange="uploadCoordinates(this.form)"><br>
+		  Cluster<br>
+		  <select name="Select Cluster" id="machine" onchange="if (selectedIndex == 0) {form.PPP.value=24;} else {form.PPP.value=8}; updateStatus(this.value);">
+		    <option value="hopper">Hopper</option>
+		    <option value="carver">Carver</option>
+                  </select>		  
+                  <div id='clusterStatus'></div><br>
+		  <!-- Crystal stuff -->
+		  <input type="Checkbox" onchange="makeCellSize()" id="CrystalFlag" value="True"/>Crystal?
+		  <input type="Text" id="IBRAV" size="4" value="14"/> Bravais Lattice
+		  <br>Cell Size Attributes:
+		  (Warning, for advanced users only. Angstroms@Degrees.)<br>
+		  <input type="text" size="10" onchange="drawCell()" id="CellA" value="10"/> A
+		  <input type="text" size="10" onchange="drawCell()" id="CellB" value="10"/> B
+		  <input type="text" size="10" onchange="drawCell()" id="CellC" value="10"/> C
+		  <input type="text" size="10" onchange="drawCell()" id="CellAlpha" value="90"/> &alpha;
+		  <input type="text" size="10" onchange="drawCell()" id="CellBeta" value="90"/> &beta;
+		  <input type="text" size="10" onchange="drawCell()" id="CellGamma" value="90"/> &gamma;
+		  <br>
+		  <!-- Hidden From User (Finshed product will use regular queue)-->
+		  <input type="hidden" id="OutputDir" value="GLOBAL"/>
+		  <input type="hidden" id="NNODES" value="1"/>
+		  <input type="hidden" id="PPP" value="24"/>
+		  <input type="hidden" id="Queue" value="debug"/> 
+		  <!-- TODO Advanced Options -->
+		  <input id="Advanced" data-inline='true' type='button' value='More Advanced Options'
+			 onClick=""/>
+		  <input id="Submit" data-inline='true' type='button' value='Submit'
+			 onClick="validateInputs(this.form)"/>
+		  <div id="subStatus"></div>
+		</form>
+	      </div>
+	    </div>
+	  </td>
+	</tr>
+      </table>
+      <br>
+      Shirley XAS is a LBNL Project
+      <br>
+      Applet credit to Jmol. Jmol.souceforge.net.
+    </center>
+
+    <br>
+    <script type="text/javascript">
+      myUsername = "invalid";
+      checkAuth();
+      runningJobsWrapper();   
+    </script>
+  </body>
+  
+  
+</html>

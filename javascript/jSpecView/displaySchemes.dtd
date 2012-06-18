@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding="UTF-8"?>
+
+<!-- XML DTD for JSpecview DisplayScheme -->
+
+<!ELEMENT displaySchemes
+   (displayScheme+)
+>
+<!ATTLIST displaySchemes
+default CDATA #REQUIRED
+>
+
+<!ELEMENT displayScheme
+   (font|titleColor|scaleColor|unitsColor|coordinateColor|gridColor|plotColor|plotAreaColor|backgroundColor)
+>
+<!ATTLIST displayScheme
+name CDATA #REQUIRED
+>
+
+<!ELEMENT backgroundColor
+   EMPTY
+>
+<!ATTLIST backgroundColor
+hex CDATA #REQUIRED
+>
+
+<!ELEMENT coordinateColor
+   EMPTY
+>
+<!ATTLIST coordinateColor
+hex CDATA #REQUIRED
+>
+
+<!ELEMENT font
+   EMPTY
+>
+<!ATTLIST font
+face CDATA "Default"
+>
+
+<!ELEMENT gridColor
+   EMPTY
+>
+<!ATTLIST gridColor
+hex CDATA #REQUIRED
+>
+
+<!ELEMENT plotAreaColor
+   EMPTY
+>
+<!ATTLIST plotAreaColor
+hex CDATA #REQUIRED
+>
+
+<!ELEMENT plotColor
+   EMPTY
+>
+<!ATTLIST plotColor
+hex CDATA #REQUIRED
+>
+
+<!ELEMENT scaleColor
+   EMPTY
+>
+<!ATTLIST scaleColor
+hex CDATA #REQUIRED
+>
+
+<!ELEMENT titleColor
+   EMPTY
+>
+<!ATTLIST titleColor
+hex CDATA #REQUIRED
+>
+
+<!ELEMENT unitsColor
+   EMPTY
+>
+<!ATTLIST unitsColor
+hex CDATA #REQUIRED
+>
