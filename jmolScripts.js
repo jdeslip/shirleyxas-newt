@@ -98,6 +98,7 @@ function tryToGrabCrystalData() {
     var jsVar = jmolGetPropertyAsJavaObject("auxiliaryinfo.models[0].infoUnitcell", "all", "preview");
     //console.log(jsVar);
     if(jsVar) {
+	
 	CrystalSymmetry = "" + jmolGetPropertyAsJavaObject("auxiliaryInfo.models[0].spaceGroup", "all", "preview");
 	myform.CrystalFlag.checked=true;
 	//console.log(jsVar[5]);

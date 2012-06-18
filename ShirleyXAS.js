@@ -192,7 +192,6 @@ function previousJobs() {
 		});
 
 }
-
 function individualJobOutput(jobName, machine) {
      $('#individualjob').html("<table width=100\%><th align=left>Results for "+jobName + "</th></table><center><img src=\"ajax-loader-2.gif\"></center>");
      //As it writes the html
@@ -552,7 +551,6 @@ function executeJob(form, materialName) {
     var nodes = form.NNODES.value;
     var machine = form.machine.value;
     var brv =  form.IBRAV.value;
-
     //This is so hacked together, watch for escaped characters.
     //Pass inputs and pbs headers as files?
     var inputs="\"MOLNAME=\\\""+materialName+"\\\"\\n";
@@ -579,7 +577,7 @@ function executeJob(form, materialName) {
     command += machine + " ";
     //command += form.Queue.value + " ";
     //console.log(command);
-
+ 
     var webdata = materialName + "\n";
     webdata += XAS + "\n";
     webdata+="["+form.CellA.value+",";
