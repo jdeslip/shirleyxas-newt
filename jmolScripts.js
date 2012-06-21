@@ -251,7 +251,7 @@ function getUnitCell() {
 function drawMolInPreview() {
     var scr = "unbind 'RIGHT';";
     scr += "unbind 'LEFT' '_clickFrank'; "; 
-    scr += "set defaultLattice {1,1,1}; ";
+    scr += "set defaultLattice {1 1 1}; ";
     var xyz = makeXYZfromCoords();
     scr += "xyz = \"" + xyz + "\";";
     //Open Try on successful load
@@ -263,7 +263,7 @@ function drawMolInPreview() {
     scr += "unitcell ON;";
     scr += "javascript addSelections();";
     scr += "}catch(e){}";
-    //console.log(scr);
+    console.log(scr);
     jmolScript(scr, previewID);
 }
 
