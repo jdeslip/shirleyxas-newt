@@ -28,7 +28,7 @@ a:active  {color:white;}
 }
 
 #placeholder {
-    width: 400px; height: 280px;
+    width: 400px; height: 250px;
 }
 
 .blueBackground {

@@ -198,8 +198,8 @@ function individualJobOutput(jobName, machine) {
      //As it writes the html
 
      machine = machine.toLowerCase();
-	//try only using carver for access? (switch back to machine)
-     var directory = "/file/" + machine + "/global/scratch/sd/" + myUsername + "/"+jobName;
+	//try only using carver for access?
+     var directory = "/file/" + "carver" + "/global/scratch/sd/" + myUsername + "/"+jobName;
      var webdata = directory + "/webdata.in";
      var myHtml = ""
      $.newt_ajax({type: "GET",
@@ -220,18 +220,17 @@ function individualJobOutput(jobName, machine) {
 }
 function loadJobOutputs(myHtml, directory, jobName, XAS)
 {
-     myHtml += "<table width=100\%><tr><td width=55\%><div id=\"flotwrapper\"><center>Core Excitation Spectra</center><div id=\"placeholder\"><center><img src=\"ajax-loader-2.gif\"></center></div><center>Electron Volts (eV)</center></div></td><td width=5\%></td><td width=40\%><div id='JmolResults'>";
+     myHtml += "<table width=100\%><tr><td width=55\%><div id=\"flotwrapper\">TITLE:"+XAS[0]+"(Average Spectrum over all)<br><div id=\"placeholder\"><center><img src=\"ajax-loader-2.gif\"></center></div></div></td><td width=5\%></td><td width=40\%><div id='JmolResults'>";
      myHtml += "</div></td></tr>";
      myHtml += "<tr><td><div id=\"flotOptions\">Show Excitation Spectrum of:";
      for (i in XAS) {
-	 var element = XAS[i];
-	 myHtml += "<input id='spect"+i.toString()+"' name=\""+element.toString()+"\" type='checkbox' onchange='makePlot(\""+directory + "\",\""+jobName + "\")'/>" + element;
-	 //add select this in jmol feature
+	 var elem = XAS[i];
+	 myHtml += "<input id='"+elem+"' type='checkbox' onchange='makePlot()'/>" + elem;
      }
      myHtml += "<br>Show Variation by Dimension<input id='dimensional' type='checkbox' onchange='makePlot()'/>";
      myHtml += "</div></td></tr></table>";
      myHtml += "<tr><td><div id=\"postprocessing\"></div></td></tr></table>";
-     //console.log(myHtml);
+     console.log(myHtml);
      //add
      //Postprocessing
      $('#individualjob').html(myHtml);
@@ -251,7 +250,7 @@ function loadJobOutputs(myHtml, directory, jobName, XAS)
 
      loadJmolResultsApp(directory, jobName);
      // to redo the next line (handle c0 case)
-     $(document).ready(makePlot(directory, jobName, [XAS[0]]));
+     $(document).ready(makePlot(directory, XAS[0].replace(/\d/,'')));
 }
 //Creates the jmol applet, couldn't use jmolapplet (wipes html)
 //needs works
@@ -261,27 +260,15 @@ function loadJmolResultsApp(dir, jobName) {
 		url: file + "?view=read",
 		success: function(res){
 		 var jMolOnLoadScript = "xyz = \"" + res + "\";" + "load \"@xyz\";";
-		 jMolOnLoadScript = "try{\nLOAD DATA 'mod'\n" + res + "\nEND 'mod';selectionHalos on;set picking select atom;}catch(e){}";
+		 jMolOnLoadScript = "try{\nLOAD DATA 'mod'\n" + res + "\nEND 'mod'}catch(e){}";
 		 console.log(jMolOnLoadScript);
-		 var myHtml = '<span><object id="jmolAppletresults" width="270" height="270" type="application/x-java-applet" name="jmolAppletresults"><param value="9670009897246854" name="syncId"><param value="true" name="progressbar"><param value="blue" name="progresscolor"><param value="black" name="boxbgcolor"><param value="white" name="boxfgcolor"><param value="Downloading JmolApplet ..." name="boxmessage"><param value="JmolAppletSigned.jar" name="archive"><param value="true" name="mayscript"><param value="javascript/jmol-12.2.25" name="codebase"><param value="JmolApplet" name="code"><param value="-Xmx512m" name="java_arguments"><param value="'+jMolOnLoadScript+'" name="script"><p style="background-color:yellow; color:black; width:270px;height:270px;text-align:center;vertical-align:middle;">You do not have Java applets enabled in your web browser, or your browser is blocking this applet.<br>Check the warning message from your browser and/or enable Java applets in<br>your web browser preferences, or install the Java Runtime Environment from<a href="http://www.java.com">www.java.com</a><br></p></span>';
+		 var myHtml = '<span><object id="jmolAppletresults" width="250" height="250" type="application/x-java-applet" name="jmolAppletresults"><param value="9670009897246854" name="syncId"><param value="true" name="progressbar"><param value="blue" name="progresscolor"><param value="black" name="boxbgcolor"><param value="white" name="boxfgcolor"><param value="Downloading JmolApplet ..." name="boxmessage"><param value="JmolAppletSigned.jar" name="archive"><param value="true" name="mayscript"><param value="javascript/jmol-12.2.25" name="codebase"><param value="JmolApplet" name="code"><param value="-Xmx512m" name="java_arguments"><param value="'+jMolOnLoadScript+'" name="script"><p style="background-color:yellow; color:black; width:250px;height:250px;text-align:center;vertical-align:middle;">You do not have Java applets enabled in your web browser, or your browser is blocking this applet.<br>Check the warning message from your browser and/or enable Java applets in<br>your web browser preferences, or install the Java Runtime Environment from<a href="http://www.java.com">www.java.com</a><br></p></span>';
 		 $('#JmolResults').html(myHtml);
 		 $('#JmolResults').trigger('create');
 	     },});
 }
 //needs works...
-function makePlot(dir, jobName, elems, dataset) {
-    //title it actively?
-    $('#placeholder').html("<center><img src=\"ajax-loader-2.gif\"></center>");
-    if (!elems) {
-	elems = [];
-	var i = 0;
-	while (document.getElementById("spect"+i.toString())) {
-	    if (document.getElementById("spect"+i.toString()).checked)
-		elems.push(document.getElementById("spect"+i.toString()).name);
-	    i++;
-	}
-    }
-    if (!dataset) dataset = [];
+function makePlot(dir, elem) {
     var options = {
 	legend: {
 	    show: true,
@@ -289,47 +276,21 @@ function makePlot(dir, jobName, elems, dataset) {
 	    position : "ne"
 	}
     };
-    console.log(elems);
-    //Plot blank if no elements
-    if(elems.length == 0 && dataset.length == 0) {
-	$('#placeholder').html("<center>No Spectra Active.</center>");
-	 return;}
-    if(elems.length == 0) { //dude is clicking too much
-	$.plot($("#placeholder"), dataset, options);
-	return;
-    }
 
-    elem = elems.pop();//pop off the last one
-    var type = elem.replace(/\d/g,'');
-    var file = "";
-    if (type == elem) {
-	file = dir + "/XAS/Spectrum-" + type + "/Spectrum-Ave-"+elem;
-    } else {
-	file = dir + "/XAS/Spectrum-" + type + "/" + jobName + "-" + jobName + "." + elem + "-XCH.xas.5.xas";
-    }
-    
+    var file = dir + "/XAS/Spectrum-" + elem + "/Spectrum-Ave-"+elem;
     $.newt_ajax({type: "GET",
 		url: file + "?view=read",
 		success: function(res){
 		var fileText = res.split(/\r\n|\r|\n/);
 		points = [];
 		for (var i = 1; i < fileText.length; i++) {
-		    var line = fileText[i].replace(/^\s*/g, '').replace(/\s*$/g, '').replace(/[  ]{2,}|\t/g, ' ').split(" ");
-		    if (line.length < 2 || fileText[i].match('#')) continue;
+		    var line = fileText[i].split(" ");
+		    if (line.length < 2) continue;
 		    points.push([parseFloat(line[0]), parseFloat(line[1])]);
 		}
-		dataset.push({label: elem ,data: points});
-		if (elems.length == 0) $.plot($("#placeholder"), dataset , options);
-		else makePlot(dir, jobName, elems, dataset);
-	    },
-		error: function(request,testStatus,errorThrown) {
-		if (elem.length <= 6)
-		    elems.push(type + "0" + elem.replace(type, ''))
-			makePlot(dir, jobName, elems, dataset);
+		$.plot($("#placeholder"), [{label: "Alabel" ,data: points}] , options);
 	    },});
 }
-
-
 function individualJob(jobName, machine) {
     $('#individualjob').html("<table width=100\%><th align=left>Output files for "+jobName
 			     + "</th></table><center><img src=\"ajax-loader-2.gif\"></center>");

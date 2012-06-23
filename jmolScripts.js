@@ -13,6 +13,8 @@ var previewID = "preview";
 var JMOL_SCRIPT_DIR = "http://portal.nersc.gov/project/als/ShirleyXAS/jmolScripts/"; //Where related jmol scritps are.
 var MIN_CELL_SIZE = 4;//angstroms
 var CELL_EXPAND_FACTOR = 2.5;//How far to expand the unit cell (multiplier)
+var CrystalSymmetry = null; // flag set when crystal is loaded, use for crystal data // doesnt work properly yet...
+
 
 //---------------------------------
 //Editor Functions-----------------
@@ -96,6 +98,8 @@ function tryToGrabCrystalData() {
     var jsVar = jmolGetPropertyAsJavaObject("auxiliaryinfo.models[0].infoUnitcell", "all", "preview");
     //console.log(jsVar);
     if(jsVar) {
+	
+	CrystalSymmetry = "" + jmolGetPropertyAsJavaObject("auxiliaryInfo.models[0].spaceGroup", "all", "preview");
 	myform.CrystalFlag.checked=true;
 	//console.log(jsVar[5]);
 	myform.CellA.value = "" + jsVar[0];
@@ -107,6 +111,7 @@ function tryToGrabCrystalData() {
 	return true;
     }
     else {
+	CrystalSymmetry = null;
 	myform.CrystalFlag.checked=false;
 	return false;
 	//make cell size array as noncrystal
@@ -119,7 +124,7 @@ function makeCellSize() {
     } else {
 	makeAbstractCellSize();
     }
-    drawCell();
+    drawMolInPreview();
 }
 function makeCrystalCellSize() {
     //Does not modify alpha/beta/gamma (can it?)
@@ -217,39 +222,49 @@ function uploadCoordinates(form) {
 	return;
     }
 }
-function drawCell() {
+function getUnitCell() {
     var myform = document.getElementById('inputs');
-    var a = myform.CellA.value / 2.0;
-    var b = myform.CellB.value / 2.0;
-    var c = myform.CellC.value / 2.0;
+    var a = myform.CellA.value;
+    var b = myform.CellB.value;
+    var c = myform.CellC.value;
     var alp = myform.CellAlpha.value;
     var bet = myform.CellBeta.value;
     var gam = myform.CellGamma.value;
     //a = a * Math.sin(alp*Math.PI/180);
     //b = b * Math.sin(bet*Math.PI/180);
     //c = c * Math.sin(gam*Math.PI/180);Not correct transform
-    var vector = "{"+a+" "+b+" "+c+"}";
+    var vector = "{"+a+" "+b+" "+c+" "+alp+" "+bet+" "+gam+"}";
+    var offset = "{"+(a/2.0)+" "+(b/2.0)+" "+(c/2.0)+"}";
     //console.log(vector);
-    var scr = "boundbox (all) "+vector+" ON;";
-    //Fix this to incorporate angles.
-    jmolScript(scr, previewID);
+    var scr = "";
+
+    if (!CrystalSymmetry) {
+	scr += "unitcell " + vector;
+	scr += " offset " + offset;
+    } else {
+	scr += "spacegroup \""+ CrystalSymmetry + "\"";
+	scr += " unitcell " + vector;
+    }
+    console.log(scr);
+    return scr;
 }
 function drawMolInPreview() {
     var scr = "unbind 'RIGHT';";
     scr += "unbind 'LEFT' '_clickFrank'; "; 
-    scr += "set defaultLattice {1,1,1}; ";
+    scr += "set defaultLattice {1 1 1}; ";
     var xyz = makeXYZfromCoords();
+    scr += "xyz = \"" + xyz + "\";";
     //Open Try on successful load
-    scr += "try{\nLOAD DATA \"mod\"\n" + xyz + "\nEND \"mod\";";
+    scr += "try{\nLOAD \"@xyz\" {1 1 0} ";
+    scr += getUnitCell() + ";";
     scr += "selectionHalos on; ";
     scr += "set PickCallback \"jmolscript:javascript selectionCallback();\";";
     scr += "set picking select atom;";
-    scr += "javascript drawCell();";
+    scr += "unitcell ON;";
     scr += "javascript addSelections();";
     scr += "}catch(e){}";
-    //console.log(scr);
+    console.log(scr);
     jmolScript(scr, previewID);
-    
 }
 
 //Redraw the molecule according to coordinates
@@ -279,7 +294,6 @@ function addSelections() {
 	}
     }
     scr += "none";
-    //console.log(scr);
     jmolScript(scr, 'preview');
 }
 function selectionCallback() {
